@@ -1,0 +1,135 @@
+% caption source
+\newcommand*{\captionsource}[1]{%
+ \caption[{#1}]{%
+ #1%
+ \\\hspace{\linewidth}%
+ \textbf{Fuente:} Elaboración propia, 2021%
+ }%
+}
+
+\newcommand*{\captionimg}[2]{%
+ \caption[{#1}]{%
+ #1%
+ \\\hspace{\linewidth}%
+ \textbf{Fuente:} #2%
+ }%
+}
+
+
+\chapter{Introducci\'on}
+\label{cap:introduccion}
+
+\section{Antecedentes y motivaci\'on}
+\label{intro:motivacion}
+StarCraft II es un videojuego de estrategia en tiempo real (RTS por sus siglas en inglés) desarrollado por Blizzard Entertainment donde cada jugador escoge una de las tres razas (Terran, Protoss y Zerg) por partida, de las cuales, cada una tiene características particulares en términos de funcionamiento, unidades y tecnologías en comparación con las otras dos, lo que resulta en una jugabilidad o experiencia de juego distinta para cada raza. En el caso de los Terran, una especie basada en humanos con tecnologías futuristas, su modo de juego gira en torno a la movilidad de sus unidades para intervenir con las bases enemigas en distintos puntos a la vez, siendo el posicionamiento uno de los puntos clave a la hora de usarles.
+
+Aunque puede parecer un tema banal, los videojuegos de estrategia en tiempo real tienen aplicaciones fuera del ámbito de la entretención. En la medicina se sugiere que los videojuegos RTS ayudan a mejorar las habilidades cognitivas de sus jugadores  (Glass, Maddox, \& Love, 2013) al necesitar la atención simultánea en múltiples aspectos dentro del juego. Existe también, en el área educacional el caso de StarCraft II siendo utilizado como herramienta seria para enseñar, no sólo teoría de videojuegos, sino que también, matemáticas avanzadas y conceptos economía (Kuo, 2012).
+
+Si bien es sabido que en cualquier juego competitivo el objetivo es intentar ganar al oponente, no siempre resulta sencillo lograrlo, por lo que es lógico buscar otros acercamientos que nos entreguen nuevas metodologías o estrategias que sean mejores y más eficientes que las ya existentes de manera que se pueda estar, aunque sea solo un paso, por delante del rival con la finalidad de obtener la victoria por sobre este ya sea en un videojuego o, incluso, en un deporte. Dicho esto, en el ámbito de las competencias profesionales de videojuegos (también conocidos como \textit{esports}), StarCraft II posee actualmente dos organizadores oficiales (ESL y DreamHack) cuyas competiciones poseen premios de hasta 500.000 dólares.
+
+Al tomar en cuenta los métodos que utilizan los jugadores de StarCraft II para mejorar, se encuentran dos focos principales: aprender de las repeticiones que ofrece el juego y el \textit{theorycrafting} (Kow \& Young, 2013). Este último involucra la búsqueda de información acerca del juego a través de medios que son, en gran parte, no oficiales y que van desde videos explicativos hasta foros en línea y \textit{wikis}, conteniendo, en su mayoría, estrategias y debates por parte de los mismos jugadores, siendo de utilidad, sobre todo, para aquellos con pocos conocimientos sobre optimización. Aún si puede parecer sencillo mejorar en el juego siguiendo estos medios, nada asegura que la información obtenida sea de ayuda, pues quienes redactan o participan en la creación de esta no siempre son jugadores profesionales o competentes en el juego. 
+
+Debido a que existen un sinfín de factores que afectan el resultado de una partida de StarCraft II, como el manejo de recursos, el posicionamiento o las decisiones inmediatas y a futuro de los jugadores, es que el intentar optimizar los órdenes de construcción (secuencias que indican las unidades que deben ser creadas en un tiempo determinado), que cambian constantemente durante una partida, en reacción a muchos factores como los mencionados anteriormente, se considera un problema de complejidad \textit{NP-Hard} al igual que algunos de los juegos más conocidos de Nintendo como Super Mario o Pokémon (Aloupis, Demaine, Guo, \& Viglietta, 2012). 
+
+Ante esto se tiene que la búsqueda de órdenes de construcción no puede ser abordada para encontrar un óptimo en un tiempo razonable, por lo que de ahora en adelante se referirán como “buenos órdenes de construcción” aquellos órdenes de construcción que sean utilizados por jugadores profesionales o competitivos de alto rango (dígase de aquellos con rango Maestro o Gran Maestro dentro del \textit{ranking} de clasificación del juego), además de aquellas que logren mejorar uno o más de los elementos que estos involucran, sean tiempo de la partida, cantidad de unidades, cantidad de estructuras o cantidad de recursos, cuya importancia varía dependiendo de la estrategia de los jugadores.
+
+\section{Estado del arte}
+
+En la actualidad, existen diversos trabajos relacionados con este género de videojuegos bajo distintos enfoques y con aplicaciones diferentes. Gran parte enfocados en el desarrollo de inteligencias artificiales para competencias entre estas mismas y de las estrategias y algoritmos que estas inteligencias artificiales requieren para lograr la victoria.
+
+Aunque en el país no existen investigaciones al respecto, internacionalmente se pueden encontrar muchos trabajos en torno a StarCraft, el primer juego de la saga del mismo nombre lanzado en 1998, o a otros juegos de estrategia en tiempo real.
+
+Si bien, ya hace 10 años que StarCraft II fue lanzado al mercado, en la actualidad siguen apareciendo nuevos trabajos enfocados sobre su precuela, StarCraft, ya que ambos son catalogados como \textit{benchmarks} importantes en cuanto a investigación de inteligencia artificial se refiere (Wang L. , Zeng, Chen, Pan, \& Cao, 2020). Con la finalidad de obtener la victoria, es que surgen investigaciones que atacan distintos puntos del juego en la búsqueda de algoritmos o metodologías que ayuden a estas inteligencias artificiales y, en algunos casos, a los jugadores humanos. En los enfoques estudiados se encuentran el uso de \textit{Machine Learning} en una inteligencia artificial que tras perfeccionarse a través de diversos tipos de aprendizaje logró llegar a altos rangos en la tabla de clasificación de StarCraft II al quedar por sobre el 99,8\% de los jugadores (Vinyals, y otros, 2019); el análisis de datos de repeticiones publicadas por Blizzard Entertainment con el fin de encontrar órdenes de construcción óptimas en StarCraft luego de comparar un acercamiento dirigido por datos con un acercamiento tradicional, ambos bajo el enfoque de un algoritmo genético y probados en enfrentamientos entre Terran contra Terran, llegando a la conclusión de que el primer acercamiento obtenía mejores resultados que uno tradicional (Wang P. , Zeng, Chen, \& Cao, 2019); o la evaluación de la efectividad de un conjunto de unidades frente a otro utilizando \textit{fuzzy integrals} en un algoritmo genético particular al comparar la precisión con que el algoritmo acierta el grupo de unidades vencedor de miles de enfrentamientos en un simulador, aunque el algoritmo falla al no tomar en cuenta algunos elementos del juego (Wang L. , Zeng, Chen, Pan, \& Cao, 2020).
+
+Actualmente, no existe una solución que permita encontrar buenos órdenes de construcción en StarCraft II para llegar a una unidad especificada por un jugador humano, aunque hay investigaciones de hace algunos años que buscan que inteligencias artificiales logren decidir cuál de los órdenes de construcción preestablecidos usar según la información obtenida del enemigo en la partida, esto al trabajar con la inteligencia artificial de libre acceso \textit{UAlbertaBot} e integrarle un algoritmo de selección de órdenes de construcción que tiene en cuenta la información actual de la partida, cuyo resultado fue una mejora en la inteligencia artificial mencionada, logrando derrotar a la inteligencia artificial del juego un 91,7\% de las partidas, pero sin ser muy eficaz ante estrategias de ataque temprano o \textit{rush} (Justesen \& Risi, 2017) y otras que entregan un análisis al usuario acerca del mejor orden de construcción según la cantidad de recursos en base a órdenes de construcción predeterminados, esto fue probado al aplicar el algoritmo (una versión modificada del NSGA II) a las tres razas y simular una partida de 450 segundos, llegando a la conclusión de que esta herramienta resulta útil para que los jugadores mejoren sus estrategias (Köstler \& Gmeiner, 2013). Trabajos más antiguos también buscan la predicción de las estrategias de los oponentes con la información recopilada por una unidad que explore el escenario en busca del enemigo. Esto aplicado en una inteligencia artificial (Park, Lee, Cho, \& Kim, 2012) e, incluso, la creación automática de escenarios para el juego (Togelius, y otros, 2010).
+
+A través de esta revisión sistemática se puede observar que gran parte de la investigación en torno al juego se aplica en las inteligencias artificiales que compiten entre ellas, dejando a los jugadores humanos en segundo plano y sin muchas soluciones que les ayuden a obtener la victoria o aumenten sus posibilidades de juego. Esto sin contar las escasas opciones que les entrega el juego mismo, las cuales se pueden reducir a un tutorial muy básico para aprender las mecánicas necesarias y la campaña individual con situaciones de juego preestablecidas. Estos antecedentes dejan a un jugador, con intenciones de mejorar, la única opción de aprender por su cuenta al observar a profesionales o aprender de la experiencia al jugar en línea contra otros oponentes en sus mismas condiciones.
+
+Es importante tener en mente que todos los acercamientos mencionados para StarCraft II en esta sección son anticuados dado que, al igual que muchos videojuegos competitivos en línea, existen parches obligatorios que son lanzados con distinta frecuencia cuyo objetivo principal es modificar el videojuego para equilibrar los aspectos del mismo (debilitando personajes muy fuertes o mejorando los más débiles), como también solucionar errores o agregar nuevas funcionalidades. Con esto, se hace relevante informar que en la actualidad Blizzard ha cesado de lanzar nuevos parches de actualización para StarCraft II.
+
+\section{Descripci\'on del problema}
+\label{intro:problema}
+Dada la contextualización anterior y como no existe una metodología o un camino feliz con el que encontrar buenos órdenes de construcción, es que los jugadores no pueden mejorar sus estrategias sin dedicar algo de su tiempo en la búsqueda de órdenes de construcción. Por esto, surge la pregunta: \textbf{¿cómo encontrar órdenes de construcción de forma más eficiente que un orden de construcción aleatorio y en un tiempo razonable, que permitan conseguir una unidad, estructura o tecnología determinada para la raza Terran en StarCraft II?}
+
+\section{Objetivos del proyecto}
+\label{intro:objetivos}
+
+\subsection{Objetivo general}
+
+Desarrollar un modelo, bajo un marco del algoritmo metaheurístico \textit{simulated annealing}, que permita generar buenos órdenes de construcción en el videojuego StarCraft II para la raza Terran, optimizados con el criterio del tiempo que requieren estas secuencias para llegar a la unidad, estructura o tecnología deseada.
+
+\subsection{Objetivos específicos}
+
+\begin{enumerate}
+\item Modelar el árbol de tecnologías de la raza Terran con sus características y requisitos necesarios para la aplicación del algoritmo.
+
+\item Modelar los elementos del juego StarCraft II necesarios para la aplicación del algoritmo.
+
+\item Implementar SA para la obtención de buenos órdenes de construcción.
+
+\item Evaluar los resultados del algoritmo implementado según el criterio del tiempo.
+\end{enumerate}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% \usepackage{graphicx}
+
+\section{Metodología}
+Si bien se contempla un componente de desarrollo que acompañe al algoritmo obtenido, el foco del presente proyecto se encuentra en la investigación. Ante esto es que se propone trabajar bajo el marco de una metodología por etapas (Villalobos-Cid, y otros, 2020) con el método científico como base. Revisados los objetivos del proyecto y las características de la solución es que se proponen tres etapas para el desarrollo del modelo. La primera etapa consta de la representación computacional de la raza Terran y la información del juego. La segunda etapa trata de la aplicación de un algoritmo metaheurístico a fin de obtener las soluciones. En la tercera etapa se evalúan los resultados obtenidos de la etapa anterior. Transversalmente a esas tres etapas, se aplicará una etapa de documentación en dónde se redacta el informe correspondiente con la información pertinente al proyecto.
+
+\subsection{Etapa 1: Representaci\'on}
+
+Engloba los objetivos específicos 1 y 2. En esta etapa se buscan representar computacionalmente los datos del juego necesarios para la aplicación del algoritmo simulated annealing, incluyendo los requisitos y características de las unidades, tecnologías y estructuras como indica el árbol de tecnologías, además de otros elementos, como la cantidad de recursos obtenidos en el tiempo, que influyen fuertemente en los órdenes de construcción.
+
+\subsection{Etapa 2: Implementaci\'on}
+
+Alineada con el objetivo específico 3, esta etapa tiene como propósito la aplicación de SA al utilizar la representación del paso anterior, además de los parámetros que deben ser definidos para uso del mismo algoritmo (temperatura inicial, probabilidad de aceptación, etc.). Para lograr esta implementación es que en esta fase se debe programar el algoritmo y ejecutarlo, obteniendo así los órdenes de construcción resultantes.
+
+\subsection{Etapa 3: Evaluaci\'on}
+
+Etapa que se asocia con el objetivo específico 4. En esta se evaluarán los resultados obtenidos de la implementación del algoritmo metaheurístico según el tiempo, comparándolo con los órdenes de construcción que sean utilizados por jugadores profesionales y jugadores competitivos (según sus rangos) de StarCraft II.
+
+También se contempla la evaluación del SA al comparar los resultados entre sí, ya sea para las mismas o distintas entradas, para así analizar el comportamiento del algoritmo en cuanto a la calidad de sus soluciones o al tiempo que tarda en ejecutarse.
+
+\subsection{Etapa de documentación}
+
+Esta etapa, que va paralela a las tres anteriores, involucra todos los objetivos específicos, pues es necesaria para evidenciar por completo los procesos y resultados del proyecto.
+
+\section{Ambiente de desarrollo y herramientas}
+
+\subsection{Ambiente de ejecución}
+
+A lo largo del proyecto se trabajará sobre un Notebook Asus modelo X556U, con un procesador Intel Core i5-7200U (2.5 GHz x4), memoria RAM de 8 GB, disco duro de 1 TB y una tarjeta gráfica integrada Intel HD Graphics 620. Todo esto con un sistema operativo Ubuntu 20.04.1 LTS.
+
+\subsection{Herramientas}
+
+Durante el desarrollo de la solución es necesaria la utilización de las siguientes herramientas: 
+\begin{itemize}
+\item R: lenguaje de programación especializado para la programación estadística. Será utilizado para implementar la solución propuesta. 
+\item Visual Studio Code: editor de texto que destaca la sintaxis específica de cada lenguaje. Será el editor en el que se codificará. 
+\item GitLab: herramienta de gestión de código fuente. Será utilizado como control de versiones del código. 
+\item Microsoft Word: herramienta de procesamiento de textos. Será utilizado para redactar el informe.
+\end{itemize}
+
+\section{Alcance y limitaciones}
+
+A continuación, se indican los alcances y limitaciones a los que está sujeta la solución propuesta.
+
+\begin{itemize}
+ \item El algoritmo metaheurístico encuentra órdenes de construcción que apliquen sólo para la raza Terran del juego StarCraft II, por lo que su aplicación a otras razas del mismo juego o a otros videojuegos escapa del alcance propuesto en este proyecto.
+
+ \item La interfaz que se incluye en el proyecto tiene el único propósito de probar el algoritmo y sus resultados, por lo que no se espera aplicar ningún tipo de métricas de usabilidad ni la inclusión de un manual de usuario que facilite su uso.
+
+ \item El programa será desarrollado en R.
+
+ \item El modelo no tomará en cuenta elementos del juego como posicionamiento, unidades o estructuras perdidas, el tipo de escenario o cualquier elemento que involucre al oponente. Además, se asume que el jugador siempre tiene acceso a la extracción de recursos.
+\end{itemize}
+
+Con esto en cuenta, para la evaluación de la solución se compararán el tiempo de la partida en los órdenes de construcción generados para obtener una unidad, estructura o tecnología específica con los utilizados por jugadores profesionales y competitivos según los datos de repeticiones obtenidos de diversos repositorios, como los listados en https://liquipedia.net/starcraft2/Replay\_Websites, a modo de analizar si el modelo provee mejores órdenes de construcción que los jugadores competitivos en los distintos rangos del ranking o que un jugador profesional.
+
+También se evaluará la eficiencia del algoritmo SA según el tiempo de ejecución que tarde para encontrar una solución, además de la convergencia de las generaciones. Todo esto para distintas entidades.
+
+
+\section{Estructura del Documento}
+
+En cuanto al formato de este documento, obviando las secciones de este Capítulo de introducción, se tiene el marco teórico que presenta definiciones del videojuego StarCraft II y de la metaheurística \textit{Simulated Annealing}, pues son utilizadas en el resto del presente documento. Continúa el estado del arte que indica los acercamientos existentes para el problema u otros trabajos relacionados al videojuego de estrategia en tiempo real. Sigue la especificación del algoritmo propuesto, dónde se detallan los elementos que este contiene. El quinto Capítulo de los experimentos con sus resultados explica los pasos realizados con el algoritmo y los efectos que surgieron de ellos. Después se analizan estos resultados en el Capítulo 6, indicando como fue el comportamiento de estos. El último Capítulo del cuerpo del documento trata de las conclusiones, haciendo una retrospectiva con todos los elementos vistos hasta el momento. Luego vienen el Glosario con algunos de los términos más importantes y las referencias a los trabajos externos revisados en este documento.

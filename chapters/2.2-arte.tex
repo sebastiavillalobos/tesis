@@ -1,0 +1,288 @@
+\chapter{Algoritmo propuesto y experimentos}
+
+En este capítulo se detalla el algoritmo incluido en el modelo propuesto, además de los experimentos a realizar para probar la aplicación de este algoritmo.
+
+\section{Algoritmo propuesto}
+
+Con la finalidad de cumplir con lo estipulado en el objetivo principal, se requiere una explicación de los pasos, los cuales son detallados en este capítulo para darle forma a la solución computacional que apunta a resolver el problema.
+
+El algoritmo \textit{Simulated Annealing} tiene 3 parámetros de entrada que son necesarios para su ejecución, los cuales son la \textbf{temperatura} inicial, \textit{T}, el \textbf{calendario de enfriamiento}, dado por \(T * \)$\alpha$, y la \textbf{generación inicial}, $G_{0}$. Esto, sin contar con las entradas principal del modelo, los cuales son la \textbf{entidad objetivo}, $E$, para la que se requiere obtener un orden de construcción y la \textbf{cantidad} $Q_{E}$ de la entidad objetivo que se desee. Además se opta por que los \textbf{ciclos} estén establecidos desde un inicio en los parámetros \textit{N} para las iteraciones externas y \textit{M} para los ciclos internos.
+
+La generación inicial es aleatoria y con una duración en tiempo de juego, \textit{t}, también aleatoria, pero con un tiempo de juego máximo definido previamente como un \textbf{intervalo}, \textit{I}, que se aplica en cada generación. La cantidad $Q_{E}$ debe ser un entero igual o mayor a 1. Por otro lado, la temperatura $T$ es un entero al inicio, pero a lo largo del algoritmo puede tomar valores decimales al ser multiplicado por $\alpha$ que es un decimal entre 0 y 1 sin incluir a este último. \newline
+
+\begin{algorithm}[H]
+    \SetKwData{Left}{left}
+    \SetKwData{This}{this}
+    \SetKwData{Up}{up}
+    \SetKwFunction{Union}{Union}
+    \SetKwFunction{FindCompress}{FindCompress}
+    \SetKwInOut{Input}{input}
+    \SetKwInOut{Output}{output}
+
+    \KwIn{$T, \alpha, G_{0}, N, M, I, E, Q_{E}$}
+    \KwOut{Generación $G_{Best}$ del orden de construcción}    
+    \caption{Simulated Annealing aplicado al problema de los órdenes de construcción}\label{alg:sa4bo}
+    
+    \tcc{Inicialización de generación}
+    $P, P_{Best} \gets puntaje(G_{0})$\;
+    $G_{SA}, G_{Best} \gets G_{0}$\;
+    
+    \For{\textit{n en N}}{
+        \For{\textit{m en M}}{
+            \tcc{Corte aleatorio de la generación actual}
+            $t_{o} \gets entero\_aleatorio(0, t_{G_{SA}})$\;
+            $G \gets recrear\_generacion(G_{SA}, t_{o})$\;
+            \tcc{Generación aleatoria a partir de la generación actual}
+            $t_{f} \gets t_{o} + entero\_aleatorio(0, I)$\;
+            $G' \gets oc\_aleatorio(G, t_{o}, t_{f}, E, Q_{E})$\;
+            \tcc{Cálculo del puntaje y diferencia entre estos}
+            $P' \gets puntaje(G')$\;
+            $\Delta_{P} \gets P' - P$\;
+            \tcc{Comparación con la generación actual}
+            \If{$\Delta P < 0$}{
+                $G_{SA}, P \gets G', P'$\;
+            }
+            \Else{
+                $prob \gets exp(\Delta_{P}/T)$\;
+                $prob\_acep \gets decimal\_aleatorio(0, 1)$\;
+                \If{$prob\_acep < prob$}{
+                    $G_{SA}, P \gets G', P'$\;
+                }
+            }
+            \tcc{Comparación con la mejor generación}
+            \If{$P' < P_{Best}$}{
+                $G_{Best}, P_{Best} \gets G', P'$\;
+            }
+        }
+        $T \gets T * \alpha$\;
+    }
+\end{algorithm}
+
+
+
+\subsection{Representación de los datos}
+
+Si bien el algoritmo ya está diseñado, es necesario tomar los elementos del videojuego que se incluyen en la solución e implementarlos para poder implementar \textit{Simulated Annealing}. Un caso importante de esto, es que las entidades tienen asignado un número entero para cada una, el cual es utilizado en gran parte de las representación a continuación.
+
+Lo más importante a representar son las \textbf{generaciones}, ya que son equivalentes a las soluciones que entregue el algoritmo. Las cuales fueron divididas en cinco tablas con toda la información necesaria y se explican en las secciones a continuación.
+
+\subsubsection{Acciones}
+
+La tabla de \textbf{acciones} que es, básicamente, el orden de construcción ya que guarda la entidad a construir y la marca de tiempo (en velocidad \textit{faster}) de cada entidad que se crea. Esto en cada fila la tabla.
+
+\begin{table}[H]
+\centering
+\def\arraystretch{1.8}
+\captionsetup{justification=centering}
+\caption{Tabla de acciones}
+\label{tab:4}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Entidad} & \textbf{Marca de Tiempo} \\
+\hline
+SCV & 2 \\ \hline
+Refinery & 10 \\ \hline
+SCV & 17 \\ \hline
+Supply Depot & 32 \\ \hline
+Refinery & 42 \\ \hline
+\end{tabular}
+\caption*{\textbf{Fuente}: Elaboración Propia, 2021}
+\end{table}
+
+\subsubsection{Edificios}
+
+Se tiene también una tabla para los \textbf{edificios} que indica el estado de estos en un segundo particular de la solución, la cual almacena los edificios creados y tiene \textbf{espacios de creación} disponibles para cada edificio (con la posibilidad de un segundo espacio para los edificios con un \textit{Reactor} que pueden construir dos unidades a la vez) con su \textbf{utilización} asociada para medir el tiempo (representado por un entero) restante en la creación de cada unidad, la cual se actualiza en cada segundo de la solución; el último valor es el de la \textbf{energía}, que nos muestra la energía actual del edificio en cuestión y es un número flotante.
+
+Para los espacios de creación existe un valor 0 que representa cuando dicho espacio no está siendo utilizado y -1 en caso de que el espacio no esté habilitado. La utilización se reduce en 1 por cada segundo real, excepto cuando es 0, pues significa que la entidad ya fue construida o simplemente no existe una en creación. Finalmente, la energía es un flotante con un tope de 200 y que aumenta 0.7875 por segundo, pero que sólo se cuenta para el \textit{Orbital Command}.
+
+\begin{table}[H]
+\centering
+\def\arraystretch{1.8}
+\captionsetup{justification=centering}
+\caption{Tabla de edificios}
+\label{tab:5}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\textbf{Edificio} & \textbf{Espacio 1} & \textbf{Utilización 1} & \textbf{Espacio 2} & \textbf{Utilización 2} & \textbf{Energía} \\
+\hline
+Supply Depot & Sin utilizar & 0 & No aplica & 0 & 0 \\ \hline
+Refinery & Sin utilizar & 0 & No aplica & 0 & 0 \\ \hline
+Refinery & Sin utilizar & 0 & No aplica & 0 & 0 \\ \hline
+Command Center & Sin utilizar & 0 & No aplica & 0 & 0 \\ \hline
+Barracks & Marine & 17 & No aplica & 0 & 0 \\ \hline
+\end{tabular}
+\caption*{\textbf{Fuente}: Elaboración Propia, 2021}
+\end{table}
+
+\subsubsection{Trabajadores}
+
+Con un acercamiento similar a los edificios, la tabla de \textbf{trabajadores} muestra el estado de los \textit{SCV} y los \textit{MULE} en un segundo particular. Existe una columna para los \textbf{espacios de creación} que funciona de igual manera que en los edificios, además de la utilización para cada edificio que se esté creando. Lo que separa esta tabla de la anterior, es que no existe la energía, ni una segunda columna para otro espacio de creación o su utilización asociada, pero en su lugar existe una \textbf{duración} que indica el tiempo restante (como entero) que le queda al \textit{MULE} antes de desaparecer.
+
+A diferencia de los edificios, los espacios de creación pueden tomar un valor mayor que 0, igual al edificio que representan; 0 en caso de que que el trabajador no esté siendo utilizado; -1 en caso de que se encuentre extrayendo minerales; o -2 en caso de que se encuentre recolectando gas vespeno.
+
+\begin{table}[H]
+\centering
+\def\arraystretch{1.8}
+\captionsetup{justification=centering}
+\caption{Tabla de trabajadores}
+\label{tab:6}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Trabajador} & \textbf{Espacio} & \textbf{Utilización} & \textbf{Duración} \\
+\hline
+SCV & Gas & 0 & No aplica \\ \hline
+SCV & Gas & 0 & No aplica \\ \hline
+SCV & Gas & 0 & No aplica \\ \hline
+SCV & Supply Depot & 5 & No aplica \\ \hline
+SCV & Minerales & 0 & No aplica \\ \hline
+SCV & Minerales & 0 & No aplica \\ \hline
+\end{tabular}
+\caption*{\textbf{Fuente}: Elaboración Propia, 2021}
+\end{table}
+
+\subsubsection{Entidades}
+
+Esta tabla indica las \textbf{entidades} que existen en un punto determinado de cada generación al tener una columna con cada \textbf{entidad} de la raza Terran, además de una columna con la \textbf{cantidad} de cada una de estas. El fin de esta tabla es la de reducir tiempo de procesamiento al no tener que contar las entidades cada vez que se necesite saber la cantidad de alguna de estas.
+
+\begin{table}[H]
+\centering
+\def\arraystretch{1.8}
+\captionsetup{justification=centering}
+\caption{Fragmento de la tabla de entidades}
+\label{tab:7}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Identificador de entidad} & \textbf{Cantidad} \\
+\hline
+1 & 1 \\ \hline
+2 & 1 \\ \hline
+3 & 2 \\ \hline
+4 & 1 \\ \hline
+5 & 1 \\ \hline
+14 & 0 \\ \hline
+17 & 1 \\ \hline
+18 & 0 \\ \hline
+19 & 0 \\ \hline
+20 & 0 \\ \hline
+21 & 18 \\ \hline
+\end{tabular}
+\caption*{\textbf{Fuente}: Elaboración Propia, 2021}
+\end{table}
+
+\subsubsection{Recursos}
+
+Una tabla que muestra los \textbf{recursos} en cada segundo de la solución. Cada fila posee el \textbf{tiempo} que avanza de 1 en 1, la cantidad flotante de \textbf{minerales}, la cantidad flotante de \textbf{gas vespeno} y la cantidad de\textbf{suministros máximos} como un entero.
+
+Aunque los minerales y gas vespeno en el juego sólo toman valores enteros, se utilizan decimales debido al aproximado de recolección por segundo. Para el tiempo, se utiliza 0 como el valor al comenzar la partida y mayor que 0 para todos los segundos que le siguen.
+
+\begin{table}[H]
+\centering
+\def\arraystretch{1.8}
+\captionsetup{justification=centering}
+\caption{Tabla de recursos}
+\label{tab:8}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Tiempo (en segundos)} & \textbf{Minerales} & \textbf{Gas Vespeno} & \textbf{Suministros} \\
+\hline 
+0 & 50.000 & 0.000 & 0 \\ \hline
+1 & 57.500 & 0.000 & 15 \\ \hline
+2 & 65.000 & 0.000 & 15 \\ \hline
+3 & 22.500 & 0.000 & 15 \\ \hline
+4 & 30.000 & 0.000 & 15 \\ \hline
+5 & 37.500 & 0.000 & 15 \\ \hline
+\end{tabular}
+\caption*{\textbf{Fuente}: Elaboración Propia, 2021}
+\end{table}
+
+\subsubsection{Árbol de tecnologías}
+
+El árbol de tecnologías se ve representado en una tabla cuyas filas representan el \textbf{identificador} de cada entidad, las cuales incluyen el \textbf{nombre} de cada entidad a fin de presentarlas cuando corresponda, el \textbf{tiempo de construcción} como un entero, la \textbf{entidad de construcción} como un entero correspondiente a la fila de la entidad, la cantidad (como entero) de los distintos \textbf{recursos} que cada entidad necesita para construirse, además de los requisitos como si requieren una entidad previa que les \textbf{desbloquee}, si es que es una \textbf{mejora} de otra mejora ya existe o si es un edificio que \textbf{evolucione} de otro. Esta tabla se encarga de proveer la información particular de cada unidad, tecnología y mejora para los distintos operadores de la solución, volviéndose una tabla de lectura a diferencia de las tablas que componen las generaciones.
+
+A excepción del nombre, todos los datos toman valores enteros, siendo 0 el mínimo y -1 en caso de que dicha variable no aplique para alguna entidad (por ejemplo, un \textit{Marine} no tiene es desbloqueado por otra entidad ni se transforma desde alguna entidad particular). Como ya se explicaba, el identificador de cada entidad está dado por el número de fila al que corresponda, iniciando con un edificio que no existe en el juego (\textit{Townhall} en la posición 1) a modo de tener el grafo, formado por este árbol de tecnologías, unido en un mismo nodo inicial.
+
+\subsection{Criterios de optimización}
+
+Existen diversos criterios que pueden ser optimizados en un orden de construcción, siendo el \textit{tiempo de juego} para la entidad a la que se desea llegar el criterio que se busca optimizar en esta ocasión, dejando a un lado criterios como la cantidad de entidades totales obtenidas, que es inversamente proporcional al tiempo de juego debido a que más entidades requerirán una mayor cantidad de tiempo, o la fuerza del ejército formado, lo cuál requiere algo más de trabajo pues esta \textit{fuerza} no es un valor que el juego entregue ni que se pueda deducir objetivamente o con facilidad.
+
+\subsection{Operadores}
+
+La solución posee distintos operadores que apoyan al algoritmo \textit{Simulated Annealing}, que se puede ver en pseudo-código en el algoritmo \ref{alg:sa4bo}, los cuales son detallados en las secciones a continuación.
+
+\subsubsection{Orden de construcción aleatorio}
+
+Una de las funciones principales (utilizada en la línea 8 del algoritmo \ref{alg:sa4bo}) que permite la creación de una generación al entregarnos todas las tablas que las componen. Recibe las tablas de una generación, que pueden ser las iniciales en caso de que sea la primera generación, el tiempo de inicio de la nueva generación (denotado por el tiempo final de la generación que se le entrega) para comenzar a armar la solución 1 segundo después del indicado y el tiempo de fin que indica el tamaño (en tiempo) de la solución.
+
+Este algoritmo consiste en actualizar todas las tablas cada segundo desde el de inicial + 1 hasta el tiempo de fin. Cada ciclo incluye la elección al azar de una de las posibles entidades a crear (que sólo se crea si cumple todos sus requisitos) y la actualización de las tablas de la generación al reducir los segundos de las entidades a la espera de ser creadas y agregar cualquiera que fuera creada durante el ciclo en los lugares correspondientes.
+
+Finalmente, el algoritmo entrega las tablas de la generación obtenida.
+
+\subsubsection{Puntaje}
+
+Es el operador que se encarga de entregar el puntaje de una solución en concreto (utilizado en las líneas 1 y 9 del algoritmo \ref{alg:sa4bo}) o, en otras palabras, es la función objetivo que se utiliza en \textit{Simulated Annealing} para comparar las generaciones dentro de los ciclos.
+
+El cálculo del puntaje se realiza en cada generación del algoritmo para chequear si la nueva solución \(G'\) es mejor o peor que la solución actual $G_{SA}$ o la mejor solución $G_{Best}$ y posee dos componentes principales: el puntaje de las entidades y el puntaje del tiempo.
+
+El puntaje de las entidades se calcula según la entidad objetivo $E$ y la cantidad de la entidad objetivo $Q_{E}$ que se indiquen al operador. En esencia, el puntaje de las entidades mide cuántas entidades faltan para llegar a la entidad objetivo al usar la cantidad de entidades requisitos $Q_{R}$ de la entidad objetivo $E$ (con los requisitos de los requisitos siendo parte de este total) junto a la cantidad de la entidad $Q_{E}$ para obtener el total necesario \(Q_R + Q_{E}\). Con la finalidad de normalizar este valor para que su resultado sea entre 0 y 1 es que queda \(P_{E} = \frac{Q_R_i + Q_E_i}{Q_R + Q_E}\), con $Q_{R}_i$ y $Q_{E}_i$ como la diferencia entre las entidades actuales en el orden de construcción y las entidades totales requeridas.
+
+De forma más simple, el puntaje del tiempo $P_t$ originalmente se pensó normalizar para que el valor estuviera entre 0 y 1 y luego ponderarlo con el puntaje de las entidades, pero dadas las características de SA, en dónde se compara una solución directamente con otra, es que este acercamiento sólo permitía la comparación a nivel localizado entre una solución $G$ y su vecino $G'$, pero al utilizar el máximo y mínimo de todos los tiempos obtenidos en la ejecución del algoritmo es que, al graficar estos datos, el puntaje de la solución $G_{Best}$ que, en teoría, sólo debe disminuir presentaba aumentos. Ante esto, se optó por ponderar sólo $P_E$ y utilizar el tiempo de juego en bruto como $P_t$.
+
+Con lo anterior, una vez calculados ambos puntajes $P_t$ y $P_E$ es que el puntaje de las entidades $P_E$ pasa por una función $f(P_E) = P_E * I * (Q_R + Q_E + 1)$, siendo $I$ el intervalo de tiempo máximo, con el fin de darle mayor importancia a las entidades necesarias para alcanzar la entidad objetivo que al tiempo de juego total de la solución, intentando que la diferencia de estos tiempos sea menor al puntaje ponderado de un orden de construcción con una entidad más cerca de llegar al objetivo. Finalmente se consigue una ponderación $P = P_t + f(P_E) $
+
+\subsubsection{Recrear generación}
+
+Operador encargado de recrear las tablas de las generaciones en un segundo de tiempo de juego en concreto (utilizado en la líneas 6 del algoritmo \ref{alg:sa4bo}), el cual recibe el segundo en que se desea recrear la generación (debe ser menor que el máximo) y las tablas de la generación.
+
+Este operador inicia cortando la tablas de recursos en el tiempo indicado y la tabla de acciones para que incluya las acciones que ocurren durante o previas al segundo especificado. La siguiente es la tabla de entidades que puede recrearse a partir de la tabla de acciones. Ya con estas tablas, sólo resta volver a armar las tablas de trabajadores y edificios al llenarlas con la tabla de entidades y poblar sus espacios con la ayuda de la tabla de acciones.
+
+\subsection{Ciclo del algoritmo}
+
+Teniendo en cuenta los operadores anteriores y el algoritmo \ref{alg:sa4bo}, se distingue la existencia de dos ciclos, uno externo y otro interno, con N y M iteraciones respectivamente.
+
+El ciclo interno (desde la línea 4 a la 24) inicia creando una solución $G'$ vecina a partir de orden de construcción $G_{SA}$ cortado en un tiempo de juego aleatorio $t_o$ dentro de su duración con un largo igual a $t_o + t_f$, con $t_f$ un tiempo de juego aleatorio entre 0 y el intervalo máximo $I$. Luego se calcula el puntaje $P'$ de dicha solución y la diferencia $\Delta P$ de este con el puntaje actual $P$ con la cual se calcula la probabilidad de aceptar la solución con puntaje $P'$ en caso de que este sea mayor al de $P$, pues una solución menor siempre se acepta. Luego se reemplaza en el caso de que la solución $G'$ tenga un mejor puntaje que $G_{Best}$.
+
+El ciclo externo se compone por el ciclo interno y la línea 25 en dónde la temperatura se actualiza según el calendario de enfriamiento dado por $\alpha$, lo cual ocasiona que la probabilidad de aceptación en caso en que $\Delta P$ sea menor tras cada iteración externa.
+
+\section{Diseño experimental}
+
+Para conseguir los objetivos propuestos es necesario realizar diversos experimentos cuyos resultados permitan llegar a una conclusión respecto al algoritmo SA y su implementación con el problema de los órdenes de construcción, por lo que a continuación se detallan los diversos experimentos llevados a cabo en este documento.
+
+\subsection{Parametrización}
+
+Utilizando el paquete de R \textit{i-race} para la parametrización, se le entregan los rangos de los ciclos internos, la temperatura, $\alpha$ usado para el enfriamiento y el intervalo máximo. Se tiene que para el ciclo interno los valores enteros van entre las 25 y 250 iteraciones, el rango de la temperatura oscila entre 500 y 50000, $\alpha$ puede ser un valor entre 0.5 y 0.99 y, finalmente, un intervalo máximo entre 30 y 180 segundos considerando el tiempo de juego \textit{faster}. De estos valores, los que más influyen en el tiempo de ejecución son el ciclo interno y el intervalo máximo. Aunque el ciclo externo también es un valor importante a optimizar, se deja como 50 tanto para la parametrización cómo para la ejecución del algoritmo, pues el tiempo necesario para obtener una solución se eleva demasiado al aumentar este número según lo observado en una etapa previa de pruebas del funcionamiento del algoritmo.
+
+Para el presupuesto de la parametrización se utiliza un valor de 180, el cual define también la cantidad de ejecuciones que realizará \textit{i-race} antes de entregar su respuesta.
+
+\subsection{Evaluación}
+
+Para poder llegar a una conclusión respecto a la hipótesis y cumplir los objetivos planteados es que en esta sección se detallan los experimentos a realizar con el algoritmo SA ajustado al problema de los órdenes de construcción.
+
+\subsubsection{Convergencia del algoritmo}
+
+Para probar que las generaciones dentro del algoritmo tienden a optimizar el tiempo de juego para una entidad en específico es que se realizan 3 ejecuciones de SA para llegar a la unidad \textit{Marine}. Esto, con el fin de comparar las soluciones obtenidas entre si, principalmente en el tiempo de juego total. Además de comparar que las ejecuciones lleguen a un tiempo de juego similar, también se puede medir la convergencia a un puntaje lo más cercano a cero que le sea posible de encontrar al algoritmo.
+
+\subsubsection{Órdenes de construcción de profesionales}
+
+Utilizando el sitio web \textit{Spawning Tool} en donde usuarios pueden publicar sus órdenes de construcción, se buscan órdenes de construcción que incluyan distintas entidades con el objetivo de contrastarlos con las soluciones del algoritmo. Las entidades objetivo de los órdenes de construcción encontrados, siendo gran parte de estos recopilados desde partidas de profesionales en torneos oficiales, se muestran en la tabla \ref{tab:expbo}.
+
+\begin{table}[H]
+\centering
+\def\arraystretch{1.8}
+\captionsetup{justification=centering}
+\caption{Resumen de órdenes de construcción a comparar}
+\label{tab:expbo}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Experimento} & \textbf{Objetivo} & \textbf{Tiempo de juego (minutos)} \\
+\hline
+1 & 1 x Marine & 1:25 \\ \hline
+2 & 1 x Starport & 2:58 \\ \hline
+3 & 2 x Hellion & 3:11 \\ \hline
+4 & 4 x Siege Tank & 5:52\\ \hline
+\end{tabular}
+\caption*{\textbf{Fuente}: Elaboración Propia, 2021}
+\end{table}
+
+\subsubsection{Aplicación dentro del juego}
+
+Para verificar que las soluciones entregadas son, efectivamente, posibles de replicar dentro del juego es que es necesario iniciar algunas partidas con la raza Terran y seguir, dentro de lo posible, estos órdenes de construcción con las marcas de tiempo y entidades que indiquen. Gracias a que el videojuego permite guardar las partidas jugadas, además de mostrar diversas estadísticas de cada una, es que el orden de construcción se puede obtener de forma gráfica.

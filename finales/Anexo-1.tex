@@ -1,0 +1,70 @@
+\chapter{Tablas}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{graphicx}
+
+
+% Please add the following required packages to your document preamble:
+% \usepackage{graphicx}
+\begin{table}[H]
+\centering
+\captionsetup{justification=centering}
+\captionsource{Promedios y mediana del método Movahed  desde cero, en distintas instancias.}
+\label{tab:A2}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|l|}
+\hline
+                           & Dice        & Jaccard    & Hausdorff   \\ \hline
+Promedio: Solo detecciones & 0,950336066 & 0,90226327 & 0,736492077 \\ \hline
+Promedio: Mejores 50       & 0,9776416   & 0,9557608  & 0,955589283 \\ \hline
+Promedio: Peores 50        & 0,9010476   & 0,8030468  & 0,52854144  \\ \hline
+Mediana:                   & 0,96150     & 0,92480    & 0,74533     \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+
+
+
+% Please add the following required packages to your document preamble:
+% \usepackage{graphicx}
+\begin{table}[H]
+\centering
+\captionsetup{justification=centering}
+\def\arraystretch{2}
+\captionimg{Tabla comparativa de resultados de pruebas entre bibliotecas que aportan al aumento de datos. La prueba muestra cuantas imágenes por segundo pueden ser procesados en un solo core, con un dataset de 2000 imágenes provenientes de ImageNet con una CPU Intel Xeon Gold 6140. Puntaje mas alto es mejor.} {(Buslaev et al., 2020)}
+\label{tab:A3}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+\textbf{} &
+  \textbf{\begin{tabular}[c]{@{}l@{}}albumentations\\ 0.5.0\end{tabular}} &
+  \textbf{\begin{tabular}[c]{@{}l@{}}imgaug\\ 0.4.0\end{tabular}} &
+  \textbf{\begin{tabular}[c]{@{}l@{}}torchvision (Pillow-SIMD backend)\\ 0.7.0\end{tabular}} &
+  \textbf{\begin{tabular}[c]{@{}l@{}}keras\\ 2.4.3\end{tabular}} &
+  \textbf{\begin{tabular}[c]{@{}l@{}}augmentor\\ 0.2.8\end{tabular}} &
+  \textbf{\begin{tabular}[c]{@{}l@{}}solt\\ 0.1.9\end{tabular}} \\ \hline
+HorizontalFlip           & \textbf{9909}   & 2821         & 2267          & 873  & 2301         & 6223  \\ \hline
+VerticalFlip             & \textbf{4374}   & 2218         & 1952          & 4339 & 1968         & 3562  \\ \hline
+Rotate                   & \textbf{371}    & 296          & 163           & 27   & 60           & 345   \\ \hline
+ShiftScaleRotate         & \textbf{635}    & 437          & 147           & 28   & -            & -     \\ \hline
+Brightness               & \textbf{2751}   & 1178         & 419           & 229  & 418          & 2300  \\ \hline
+Contrast                 & \textbf{2756}   & 1213         & 352           & -    & 348          & 2305  \\ \hline
+BrightnessContrast       & \textbf{2738}   & 699          & 195           & -    & 193          & 1179  \\ \hline
+ShiftRGB                 & \textbf{2757}   & 1176         & -             & 348  & -            & -     \\ \hline
+ShiftHSV                 & \textbf{597}    & 284          & 58            & -    & -            & 137   \\ \hline
+Gamma                    & \textbf{2844}   & -            & 382           & -    & -            & 946   \\ \hline
+Grayscale                & \textbf{5159}   & 428          & 709           & -    & 1064         & 1273  \\ \hline
+RandomCrop64             & \textbf{175886} & 3018         & 52103         & -    & 41774        & 20732 \\ \hline
+PadToSize512             & \textbf{3418}   & -            & 574           & -    & -            & 2874  \\ \hline
+Resize512                & 1003            & 634          & \textbf{1036} & -    & 1016         & 977   \\ \hline
+RandomSizedCrop\_64\_512 & \textbf{3191}   & 939          & 1594          & -    & 1529         & 2563  \\ \hline
+Posterize                & \textbf{2778}   & -            & -             & -    & -            & -     \\ \hline
+Solarize                 & \textbf{2762}   & -            & -             & -    & -            & -     \\ \hline
+Equalize                 & 644             & 413          & -             & -    & \textbf{735} & -     \\ \hline
+Multiply                 & \textbf{2727}   & 1248         & -             & -    & -            & -     \\ \hline
+MultiplyElementwise      & 118             & \textbf{209} & -             & -    & -            & -     \\ \hline
+ColorJitter              & \textbf{368}    & 78           & 57            & -    & -            & -     \\ \hline
+\end{tabular}%
+}
+\end{table}
